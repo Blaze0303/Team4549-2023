@@ -91,12 +91,12 @@ public class Drive extends SubsystemBase {
     }
    // filter.calculate(0);
     // setts currentlimit 
-    frontLeft.setSmartCurrentLimit(60);
-    middleLeft.setSmartCurrentLimit(60);
-    backLeft.setSmartCurrentLimit(60);
-    frontRight.setSmartCurrentLimit(60);
-    middleRight.setSmartCurrentLimit(60);
-    backRight.setSmartCurrentLimit(60);
+    frontLeft.setSmartCurrentLimit(28);
+    middleLeft.setSmartCurrentLimit(28);
+    backLeft.setSmartCurrentLimit(28);
+    frontRight.setSmartCurrentLimit(28);
+    middleRight.setSmartCurrentLimit(28);
+    backRight.setSmartCurrentLimit(28);
     //burns flash 
     frontLeft.burnFlash();
     middleLeft.burnFlash();
