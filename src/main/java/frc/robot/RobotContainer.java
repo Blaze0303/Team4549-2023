@@ -5,13 +5,15 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.BlindMansCane;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -25,7 +27,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Drive m_drive = new Drive();
   private final Shooter m_shooter = new Shooter();
-  private final BlindMansCane m_blindmanscane = new BlindMansCane();
+  private final SendableChooser<Command> m_autochooser = new SendableChooser<>();
   PowerDistribution m_pdp = new PowerDistribution(1, ModuleType.kRev);
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -33,8 +35,17 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     m_drive.setDefaultCommand(
-      m_drive.arcadeDriveCommand(()-> 0.75 * m_driverController.getLeftY(), ()-> 0.75 * m_driverController.getLeftX())
+      m_drive.arcadeDriveCommand(()-> -0.75 * m_driverController.getLeftY(), ()-> -0.75 * m_driverController.getLeftX())
     );
+      m_autochooser.setDefaultOption("Right Red", RightRed());
+      m_autochooser.addOption("Middle Red", MiddleRed());
+      m_autochooser.addOption("Left Red", LeftRed());
+      m_autochooser.addOption("Right Blue", RightBlue());
+      m_autochooser.addOption("Middle Blue", MiddleBlue());
+      m_autochooser.addOption("Left Blue", LeftBlue());
+
+      SmartDashboard.putData("Auto choices", m_autochooser);
+
     // Configure the trigger bindings
     configureBindings();
 
@@ -66,19 +77,19 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
+  
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.x().whileTrue(m_shooter.FwdShoot(-1));
-    m_driverController.b().whileTrue(m_shooter.RevShoot(-1));
-    m_driverController.a().whileTrue(m_shooter.FwdHalfShoot(-1));
-    m_driverController.y().whileTrue(m_shooter.FwdFullShoot(-1));
-    m_driverController.back().whileTrue(m_blindmanscane.fwdblindmanscane(.1));
-    m_driverController.start().whileTrue(m_blindmanscane.revblindmanscane(.1));
-    /*m_driverController.leftBumper().equals(m_drive.InvertMyDrive(true));
-    m_driverController.leftTrigger().equals(m_drive.InvertMyDrive(false));*/
+    m_driverController.y().whileTrue(m_shooter.FwdShoot(0.65));
+    m_driverController.leftBumper().whileTrue(m_shooter.RevShoot(-1));
+    m_driverController.a().whileTrue(m_shooter.FwdShoot(0.45));
+    m_driverController.b().whileTrue(m_shooter.FwdShoot(0.48));
+    m_driverController.x().whileTrue(m_shooter.FwdShoot(1));
+    m_driverController.rightBumper().whileTrue(m_drive.arcadeDriveCommand(()-> -0.90 * m_driverController.getLeftY(), ()-> -0.90 * m_driverController.getLeftX()));
+    m_driverController.rightTrigger().whileTrue(m_drive.arcadeDriveCommand(()-> 0.75 * m_driverController.getLeftY(), ()-> 0.75 * m_driverController.getLeftX()));
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -87,6 +98,96 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return m_drive.LeftBlue();
+    return m_autochooser.getSelected();
+    }
+     /**  Auto Blue Alliance Station 1 */
+  public CommandBase LeftBlue(){
+    return  new InstantCommand(()->{}).withName("autoStarted")
+    .andThen( m_shooter.FwdShoot(.48).withTimeout(0.5))
+
+    .andThen(
+      m_drive.run(() -> m_drive.drive.arcadeDrive(-0.5, 0)).withTimeout(2.75)
+    )
+    .andThen(
+      m_drive.run(() -> m_drive.drive.arcadeDrive(0, 0.34)).withTimeout(.76)
+    )
+    .andThen(
+      m_drive.run(() -> m_drive.drive.arcadeDrive(0, 0.34)).withTimeout(.65)
+    ).withName("autoEnd");
   }
+    /**  Auto Blue Alliance Station 2 */
+    public CommandBase MiddleBlue(){
+      return new InstantCommand(()->{}).withName("autoStarted")
+      .andThen(
+        m_shooter.FwdShoot(.48).withTimeout(1)
+      )
+      .andThen(
+        m_drive.run(() -> m_drive.drive.arcadeDrive(-0.6, 0)).withTimeout(2.5)
+        ) 
+        .andThen(
+          m_drive.run(() -> m_drive.drive.arcadeDrive(0, 0.34)).withTimeout(.76)
+        ).withName("autoEnd");
+    }
+  /** Auto Blue Alliance Station 3  */
+  public CommandBase RightBlue(){
+    return new InstantCommand(()->{}).withName("autoStarted")
+    .andThen(
+      m_shooter.FwdShoot(.48).withTimeout(0.5)
+    )
+    .andThen(
+      m_drive.run(() -> m_drive.drive.arcadeDrive(-0.5, 0)).withTimeout(2.75)
+    )
+    .andThen(
+      m_drive.run(() -> m_drive.drive.arcadeDrive(0, 0.34)).withTimeout(.76)
+    )
+    .andThen(
+      m_drive.run(() -> m_drive.drive.arcadeDrive(0, 0.34)).withTimeout(.65)
+    ).withName("autoEnd");
+    
+  }
+  /** Auto Red Alliance Station 1 */
+public CommandBase LeftRed(){
+  return new InstantCommand(()->{}).withName("autoStarted")
+    .andThen(
+      m_shooter.FwdShoot(.48).withTimeout(0.5)
+    )
+    .andThen(
+      m_drive.run(() -> m_drive.drive.arcadeDrive(-0.5, 0)).withTimeout(2.75)
+    )
+    .andThen(
+      m_drive.run(() -> m_drive.drive.arcadeDrive(0, 0.34)).withTimeout(.76)
+    )
+    .andThen(
+      m_drive.run(() -> m_drive.drive.arcadeDrive(0, 0.34)).withTimeout(.65)
+    ).withName("autoEnd");
+}
+  /**  Auto Red Alliance Station 2 */
+  public CommandBase MiddleRed(){
+    return new InstantCommand(()->{}).withName("autoStarted")
+    .andThen(
+       m_shooter.FwdShoot(.48).withTimeout(1)
+      )
+      .andThen(
+        m_drive.run(() -> m_drive.drive.arcadeDrive(-0.6, 0)).withTimeout(2.5)
+      )
+      .andThen(
+        m_drive.run(() -> m_drive.drive.arcadeDrive(0, 0.34)).withTimeout(.76)
+      ).withName("autoEnd");
+  }
+/**  Auto Red Alliance Station 3 */
+public CommandBase RightRed(){
+  return new InstantCommand(()->{}).withName("autoStarted")
+    .andThen(
+      m_shooter.FwdShoot(.48).withTimeout(0.5)
+    )
+    .andThen(
+      m_drive.run(() -> m_drive.drive.arcadeDrive(-0.5, 0)).withTimeout(2.75)
+    )
+    .andThen(
+      m_drive.run(() -> m_drive.drive.arcadeDrive(0, 0.34)).withTimeout(.76)
+    )
+    .andThen(
+      m_drive.run(() -> m_drive.drive.arcadeDrive(0, 0.34)).withTimeout(.65)
+    ).withName("autoEnd");
+}
 }

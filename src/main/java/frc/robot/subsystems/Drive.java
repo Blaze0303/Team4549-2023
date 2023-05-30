@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 //import frc.robot.Constants.DriveConstants;
 
 public class Drive extends SubsystemBase {
-  Shooter m_Shooter = new Shooter();
   CANSparkMax frontRight = new CANSparkMax(2, MotorType.kBrushless);
   CANSparkMax middleRight = new CANSparkMax(3, MotorType.kBrushless);
   CANSparkMax backRight = new CANSparkMax(4, MotorType.kBrushless);
@@ -41,7 +40,7 @@ public class Drive extends SubsystemBase {
     new WPI_VictorSPX(DriveConstants.kleftDriveMotorPort), 
     new WPI_VictorSPX(DriveConstants.kleftBackDriveMotorPort));
    /** DriveTrain */
-   DifferentialDrive drive = new DifferentialDrive(rightGroup, leftGroup);
+   public DifferentialDrive drive = new DifferentialDrive(rightGroup, leftGroup);
    Timer autoTimer = new Timer();
     boolean InvertMyDrive;
    // SlewRateLimiter filter = new SlewRateLimiter(.5, 0.5, 0.5);
@@ -61,7 +60,7 @@ public class Drive extends SubsystemBase {
     frontRight.getBusVoltage();
     middleRight.getBusVoltage();
     backRight.getBusVoltage();
-    // return motor tempmpre
+    // return motor temperature
     frontLeft.getMotorTemperature();
     frontLeft.getMotorTemperature();
     middleLeft.getMotorTemperature();
@@ -127,160 +126,7 @@ public class Drive extends SubsystemBase {
   public CommandBase arcadeDriveCommand(DoubleSupplier fwd, DoubleSupplier rot) {
     return run(() -> drive.arcadeDrive((fwd.getAsDouble()), (rot.getAsDouble()))).withName("arcadedrive");
   }
-
-  /**  Auto Blue Alliance Station 1 */
-  public CommandBase LeftBlue(){
-    return  runOnce(() -> autoTimer.reset()).withName("autoStarted")
-     .andThen(
-      //run(() -> m_Shooter.FwdShoot())
-    )
-    .andThen(
-      run(() -> autoTimer.start()), 
-      run(() -> drive.arcadeDrive(0.5, 0)), 
-      run(() -> autoTimer.hasElapsed(1)),
-      run(() -> autoTimer.stop()))
-    .andThen(
-      run(() -> autoTimer.start()),
-      run(() -> drive.arcadeDrive(0, 0.5)),
-      run(() -> autoTimer.hasElapsed(0.5)),
-      run(() -> autoTimer.stop()))
-    .andThen(
-      run(() -> autoTimer.start()),
-      run(() -> drive.arcadeDrive(0.5, 0)),
-      run(() -> autoTimer.hasElapsed(3)),
-      run(() -> autoTimer.stop()))
-    .andThen(
-      run(() -> autoTimer.start()),
-      run(() -> drive.arcadeDrive(0, -0.5)),
-      run(() -> autoTimer.hasElapsed(0.5)),
-      run(() -> autoTimer.stop()))
-    .andThen(
-      run(() -> autoTimer.start()),
-      run(() -> drive.arcadeDrive(0.5, 0)),
-      run(() -> autoTimer.hasElapsed(2)),
-      run(() -> autoTimer.stop()))
-    .andThen(
-      run(() -> autoTimer.start()),
-      run(() -> drive.arcadeDrive(0, 0.5)),
-      run(() -> autoTimer.hasElapsed(0.5)),
-      run(() -> autoTimer.stop())
-    ).withName("autoEnd");
-  }
-  /** Auto Blue Alliance Station 3  */
-  public CommandBase rightBlue(){
-    return runOnce(()-> autoTimer.reset())
-    .andThen(
-      //run(()-> m_Shooter.FwdShoot())
-    )
-    .andThen(
-      run(() -> autoTimer.start()), 
-      run(() -> drive.arcadeDrive(0.5, 0)), 
-      run(() -> autoTimer.hasElapsed(1)),
-      run(() -> autoTimer.stop()))
-    .andThen(
-      run(() -> autoTimer.start()),
-      run(() -> drive.arcadeDrive(0, 0.5)),
-      run(() -> autoTimer.hasElapsed(0.5)),
-      run(() -> autoTimer.stop()))
-    .andThen(
-      run(() -> autoTimer.start()),
-      run(() -> drive.arcadeDrive(0.5, 0)),
-      run(() -> autoTimer.hasElapsed(3)),
-      run(() -> autoTimer.stop()))
-    .andThen(
-      run(() -> autoTimer.start()),
-      run(() -> drive.arcadeDrive(0, -0.5)),
-      run(() -> autoTimer.hasElapsed(0.5)),
-      run(() -> autoTimer.stop()))
-    .andThen(
-      run(() -> autoTimer.start()),
-      run(() -> drive.arcadeDrive(0.5, 0)),
-      run(() -> autoTimer.hasElapsed(2)),
-      run(() -> autoTimer.stop()))
-    .andThen(
-      run(() -> autoTimer.start()),
-      run(() -> drive.arcadeDrive(0, 0.5)),
-      run(() -> autoTimer.hasElapsed(0.5)),
-      run(() -> autoTimer.stop())
-    ).withName("autoEnd");
-    
-  }
-  /** Auto Red Alliance Station 1 */
-public CommandBase leftRed(){
-  return runOnce(()-> autoTimer.reset())
-    .andThen(
-      //run(()-> m_Shooter.FwdShoot())
-    )
-    .andThen(
-      run(() -> autoTimer.start()), 
-      run(() -> drive.arcadeDrive(0.5, 0)), 
-      run(() -> autoTimer.hasElapsed(1)),
-      run(() -> autoTimer.stop()))
-    .andThen(
-      run(() -> autoTimer.start()),
-      run(() -> drive.arcadeDrive(0, 0.5)),
-      run(() -> autoTimer.hasElapsed(0.5)),
-      run(() -> autoTimer.stop()))
-    .andThen(
-      run(() -> autoTimer.start()),
-      run(() -> drive.arcadeDrive(0.5, 0)),
-      run(() -> autoTimer.hasElapsed(3)),
-      run(() -> autoTimer.stop()))
-    .andThen(
-      run(() -> autoTimer.start()),
-      run(() -> drive.arcadeDrive(0, -0.5)),
-      run(() -> autoTimer.hasElapsed(0.5)),
-      run(() -> autoTimer.stop()))
-    .andThen(
-      run(() -> autoTimer.start()),
-      run(() -> drive.arcadeDrive(0.5, 0)),
-      run(() -> autoTimer.hasElapsed(2)),
-      run(() -> autoTimer.stop()))
-    .andThen(
-      run(() -> autoTimer.start()),
-      run(() -> drive.arcadeDrive(0, 0.5)),
-      run(() -> autoTimer.hasElapsed(0.5)),
-      run(() -> autoTimer.stop())
-    ).withName("autoEnd");
-}
-/**  Auto Red Alliance Station 3 */
-public CommandBase rightRed(){
-  return runOnce(()-> autoTimer.reset())
-    .andThen(
-      //run(()-> m_Shooter.FwdShoot())
-    )
-    .andThen(
-      run(() -> autoTimer.start()), 
-      run(() -> drive.arcadeDrive(0.5, 0)), 
-      run(() -> autoTimer.hasElapsed(1)),
-      run(() -> autoTimer.stop()))
-    .andThen(
-      run(() -> autoTimer.start()),
-      run(() -> drive.arcadeDrive(0, 0.5)),
-      run(() -> autoTimer.hasElapsed(0.5)),
-      run(() -> autoTimer.stop()))
-    .andThen(
-      run(() -> autoTimer.start()),
-      run(() -> drive.arcadeDrive(0.5, 0)),
-      run(() -> autoTimer.hasElapsed(3)),
-      run(() -> autoTimer.stop()))
-    .andThen(
-      run(() -> autoTimer.start()),
-      run(() -> drive.arcadeDrive(0, -0.5)),
-      run(() -> autoTimer.hasElapsed(0.5)),
-      run(() -> autoTimer.stop()))
-    .andThen(
-      run(() -> autoTimer.start()),
-      run(() -> drive.arcadeDrive(0.5, 0)),
-      run(() -> autoTimer.hasElapsed(2)),
-      run(() -> autoTimer.stop()))
-    .andThen(
-      run(() -> autoTimer.start()),
-      run(() -> drive.arcadeDrive(0, 0.5)),
-      run(() -> autoTimer.hasElapsed(0.5)),
-      run(() -> autoTimer.stop())
-    ).withName("autoEnd");
-}
+ 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
